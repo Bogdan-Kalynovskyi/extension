@@ -8,8 +8,8 @@
             var s = document.createElement('div');
             s.className = 'btn123';
             s.innerHTML = htmlEntities(new Date(json.responseText));
-            s.style.left = e.pageX - 5;
-            s.style.top  = e.pageY - 5;
+            s.style.left = e.pageX - 5 + 'px';
+            s.style.top  = e.pageY - 5 + 'px';
 
             document.body.appendChild(s);
         }
@@ -33,6 +33,6 @@
         var s = document.getElementsByClassName('btn123')[0];
 
         if (s && e.target !== s) {
-            document.removeChild(s);
+            document.body.removeChild(s);
         }
     });
