@@ -1,18 +1,19 @@
+<!doctype html>
 <html>
-<head>
-	<title>Background Ext HTML</title>
-</head>
-<body>
-<script>
-var r = new XMLHttpRequest();
-r.open("GET", "http://localhost/data.json")
-r.onreadystatechange = function() {
-	if (r.readyState == 4 ) {
-		document.getElementById("resp").innerText = r.responseText;
-	}
-}
-r.send();
-</script>
-</body>
+    <head>
+        <title>Background Extension HTML. It is shared between all the LiveJournal windows!</title>
+    </head>
+    <body>
+        <script>
+        var r = new XMLHttpRequest();
+        r.open("GET", "http://localhost/data.json")
+        r.onreadystatechange = function() {
+            if (r.readyState == 4 ) {
+                document.getElementById("resp").innerText = r.responseText;
+            }
+        }
+        r.send();
+        </script>
+    </body>
 </html>
 

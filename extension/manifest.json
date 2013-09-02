@@ -1,20 +1,31 @@
 {
-  "name": "My First Extension",
-  "version": "1.0",
-  "manifest_version": 2,
-  "description": "The first extension that I made.",
-  "browser_action": {
-    "default_icon": "icon.png"
-  },
-  "permissions": [
-    "http://*/"
-  ],
-  "content_scripts": [
-  {
-    //"matches": ["http://*.livejournal.com/*"],
-    "matches": ["http://localhost/*"],
-    "run_at": "document_end",
-    "js": ["jquery-1.9.0.js", "myscript.js"]
-  }
-  ]
+    "manifest_version": 2,
+    "name": "LJ",
+    "description": "This extension helps us with LJ comments",
+    "version": "1.0",
+    "permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "persistent": true,
+        "scripts": ["background.js"]
+    },
+    "content_scripts": [
+        {
+            "matches": [
+              "http://*/*",
+              "https://*/*"
+            ],
+            "css": ["content.css"],
+            "js": [
+                "content.js",
+                "jquery-1.9.0.js"
+            ]
+        }
+    ]
 }
