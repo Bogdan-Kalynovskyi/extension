@@ -5,7 +5,7 @@
     "version": "1.0",
     "permissions": [
         "http://*.livejournal.com/*",
-        "https://*.livejournal.com/*" //todo: not works on https, j think i know why
+        "https://*.livejournal.com/*"
     ],
     "browser_action": {
         "default_icon": "icon.png"
