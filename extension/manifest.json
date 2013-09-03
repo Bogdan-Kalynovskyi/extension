@@ -4,8 +4,8 @@
     "description": "This extension helps us with LJ comments",
     "version": "1.0",
     "permissions": [
-        "http://*/*",
-        "https://*/*"
+        "http://*/*", //todo: this could be filtered to LiveJournal, see commit history
+        "https://*/*" //todo: not works on https, j think i know why
     ],
     "browser_action": {
         "default_icon": "icon.png"
@@ -14,7 +14,7 @@
         {
             "matches": [
               "http://*/*",
-              "https://*/*"
+              "https://*/*" //todo: not works on https, j think i know why
             ],
             "js": [
                 "jquery-1.9.0.js",
