@@ -2,13 +2,12 @@
 
     'use strict';
 
-    var uid,
-        popup,
+    var popup,
         css = '_lj_popup' + Date.now();
 
 
     function htmlEntities(str) {
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
 
@@ -26,7 +25,6 @@
         }
 
         popup = document.createElement('div');
-        //popup.id = uid;
         popup.className = css;
         popup.innerHTML = htmlEntities(new Date(request.responseText));
         popup.style.left = e.pageX - 5 + 'px';
@@ -74,7 +72,6 @@
                 $.ajax("http://timeapi.org/pdt/" + encodeURIComponent(selectionText), {
                     dataType: 'text',
                     complete: function (request) {
-                        uid = '_lj' + Date.now();
                         drawPopup(request, e);
                     }
                 });

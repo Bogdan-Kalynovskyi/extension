@@ -21,10 +21,9 @@
               "http://*/*",
               "https://*/*"
             ],
-            "css": ["content.css"],
             "js": [
-                "content.js",
-                "jquery-1.9.0.js"
+                "jquery-1.9.0.js",
+                "content.js"
             ]
         }
     ]
