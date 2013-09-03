@@ -8,6 +8,11 @@
     var serviceHost = 'http://example.com',
 
 
+    function htmlEntities(str) {
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+
     console.log(location.href);
 
     function addCSS (code) {
