@@ -91,15 +91,20 @@
 =======
     // lines above are for incapsulation purposes only
 
+<<<<<<< HEAD
     // this function is to prevent data be executed as HTML (unused now)
     /*function htmlEntities(str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }*/
 
 >>>>>>> making small and clear demo
+=======
+>>>>>>> important bugfixes, read todos
 
     var serviceHost = 'http://example.com',
         serviceQuery = ':8080/api/?query=';
+
+    console.log(location.href);
 
     $.ajax(serviceHost + serviceQuery + encodeURIComponent(location.href), {
         dataType: 'json',
