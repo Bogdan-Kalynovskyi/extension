@@ -2,8 +2,8 @@
 
     'use strict';
 
-    var popup,
-        css = '_lj_popup' + Date.now();
+    // lines above are for incapsulation purposes only
+
 
     var serviceHost = 'http://example.com',
 
@@ -38,55 +38,13 @@
     }
 
 
-    function removePopup () {
-        $(popup).fadeOut(400, function() {
-            if (popup === this) {
-                popup = null;
-                document.body.removeChild(this);
-            }
-        });
-    }
+    var serviceHost = 'http://example.com',
+        serviceQuery = ':8080/api/?query=';
 
-
-    addCSS('.' + css + '{\
-        position: absolute;\
-        padding: 5px 10px 3px 10px;\
-        border-radius: 7px;\
-        border: 1px solid #BFBFBF;\
-        color: #444;\
-        font-size: 16px;\
-        text-shadow: 0 1px 0 #FFF; 0 -1px 0 rgba(0,0,0,.2);\
-        box-shadow: 4px 4px 4px 1px rgba(0, 0, 0, .1);\
-        background-color: #EEE;\
-        background-image: linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -moz-linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -webkit-linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -ms-linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #CCC),color-stop(0.81, #EEE));\
-    }');
-
-
-    document.body.addEventListener('mouseup', function (e) {
-
-        if (popup !== e.target) {
-
-            var selectionText = window.getSelection().toString().trim();
-
-            if (selectionText) {
-                $.ajax("http://timeapi.org/pdt/" + encodeURIComponent(selectionText), {
-                    dataType: 'text',
-                    complete: function (request) {
-                        drawPopup(request, e);
-                    }
-                });
-            }
-        }
-    });
-
-
-    document.body.addEventListener('mousedown', function (e) {
-        if (popup && popup !== e.target) {
-            removePopup();
+    $.ajax(serviceHost + serviceQuery + encodeURIComponent(location.href), {
+        dataType: 'json',
+        complete: function (json) {
+            console.log(json);
         }
     });
 
