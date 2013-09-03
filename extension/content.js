@@ -6,8 +6,11 @@
         css = '_lj_popup' + Date.now();
 
 
+    //todo: we can load jQuery only when it is not on the page
+
+
     function htmlEntities(str) {
-        return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
 
