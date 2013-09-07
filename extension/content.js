@@ -5,7 +5,7 @@
     // lines above are for incapsulation purposes only
 
 
-    var serviceHost = 'http://example.com',
+    var serviceHost = 'http://nearbyfuture.com',
         serviceQuery = ':8080/api/?query=';
 
     console.log(location.href);
