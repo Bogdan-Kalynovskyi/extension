@@ -97,19 +97,24 @@
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }*/
 
+<<<<<<< HEAD
 >>>>>>> making small and clear demo
 =======
 >>>>>>> important bugfixes, read todos
 
     var serviceHost = 'http://example.com',
         serviceQuery = ':8080/api/?query=';
+=======
+    var serviceURL = 'http://nearbyfuture.com:8080/api/?query=';
+>>>>>>> some change
 
-    console.log(location.href);
-
-    $.ajax(serviceHost + serviceQuery + encodeURIComponent(location.href), {
+    $.ajax(serviceURL + encodeURIComponent(location.href), {
         dataType: 'json',
         complete: function (json) {
             console.log(json);
+        },
+        error: function () {
+
         }
     });
 
