@@ -6,7 +6,8 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^api/$', 'backend.views.api', name='api'),
+    url(r'^api/rating/get/$', 'backend.views.rating_get', name='rating_get'),
+    url(r'^api/rating/set/$', 'backend.views.rating_set', name='rating_set'),
     # url(r'^$', 'backend.views.home', name='home'),
     # url(r'^backend/', include('backend.foo.urls')),
 
