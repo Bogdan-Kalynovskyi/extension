@@ -5,18 +5,12 @@
     var popup,
         css = '_lj_popup' + Date.now();
 
-<<<<<<< HEAD
-    var serviceHost = 'http://nearbyfuture.com',
-        serviceQuery = ':8080/api/?query=';
-=======
-
     //todo: we can load jQuery only when it is not on the page
 
 
     function htmlEntities(str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
->>>>>>> everything that is not needed must die
 
     console.log(location.href);
 
