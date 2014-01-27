@@ -8,8 +8,13 @@
 
 BOT_NAME = 'lj'
 
-SPIDER_MODULES = ['lj.spiders']
-NEWSPIDER_MODULE = 'lj.spiders'
+SPIDER_MODULES = ['scraping.spiders']
+NEWSPIDER_MODULE = 'scraping.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'lj (+http://www.yourdomain.com)'
+USER_AGENT = 'lj (+http://www.nearbyfuture.com)'
+
+# DOWNLOAD_HANDLERS = {
+#     's3': '',
+#   }
+
