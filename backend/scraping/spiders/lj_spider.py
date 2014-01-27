@@ -13,5 +13,6 @@ class LjSpider(BaseSpider):
 
 	def parse(self, response):
 		#filename = response.url.split("/")[-2]
+		filename = "lj.txt"
 		open(filename, 'wb').write(response.body)
 		
