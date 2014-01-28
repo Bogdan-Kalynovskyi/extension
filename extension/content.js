@@ -2,114 +2,108 @@
 
     'use strict';
 
-	var host = 'http://192.168.1.72:8080/api/rating/',
-		userName = getLoggedUserName(),
-		author = location.host.substr(0, location.host.indexOf('.')),
-		postId = parseInt(location.pathname.substr(1));
+    var host = 'http://192.168.1.72:8080/api/rating/',
+        userName = getLoggedUserName(),
+        author = location.host.substr(0, location.host.indexOf('.')),
+        postId = parseInt(location.pathname.substr(1));
 
-
-    var serviceHost = 'http://example.com',
-
+    var width = 200;
 
     function htmlEntities(str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
 
-    console.log(location.href);
-
-    function addCSS (code) {
-         var s = document.createElement('style');
-         s.innerHTML = code;
-         document.getElementsByTagName('head')[0].appendChild(s);
-    }
-
-
-    function drawPopup (request, e) {
-
-        if (popup) {
-            removePopup();
-        }
-
-        popup = document.createElement('div');
-        popup.className = css;
-        popup.innerHTML = htmlEntities(new Date(request.responseText));
-        popup.style.left = e.pageX - 5 + 'px';
-        popup.style.top  = e.pageY - 5 + 'px';
-
-        document.body.appendChild(popup);
-    }
-
-
-    var serviceHost = 'http://example.com',
-        serviceQuery = ':8080/api/?query=';
-        
-
-	function htmlEntities(str) {
-		return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	}
-
-
     function getLoggedUserName() {
-    	var hiddenInput = document.querySelector('#Greeting input[name=user]');
+        var el = document.querySelector('.ljuser b');
 
-    	if (hiddenInput) {
-    		return hiddenInput.value;
-    	} else {
-    		return null;
-    	}
+        if (el) {
+                return el.innerText;
+        } else {
+                return null;
+        }
     }
 
 
-	function doRate(event) {
-		var el = this,
-			url = host + 'set/',
-			commentId = parseInt(el.parentNode.id.substr(1)),
-			elementData = el.getBoundingClientRect(),
-			width = elementData.width,
-			clickX = event.pageX - elementData.left,
-			rating = (clickX - width/2) / width/2 * 100,
-			data = {
-				userName: userName,
-				author: author,
-				postId: postId,
-				commentId: commentId,
-				rating: rating
-			};
+    function getEventRelativeX(el, event) {
+        var elementData = el.getBoundingClientRect();
+    	
+    	return event.pageX - elementData.left;
+    }
 
-		ajax.get(url, data, function() {
-			//
-		});
-	}
+
+    function doRate(event) {
+        var el = this,
+            url = host + 'set/',
+            commentId = parseInt(el.parentNode.id.substr(1)),
+            clickX = getEventRelativeX(el, event),
+            rating = (clickX - width/2) / width/2 * 100,
+            data = {
+                    userName: userName,
+                    author: author,
+                    postId: postId,
+                    commentId: commentId,
+                    rating: rating
+            };
+
+        ajax.get(url, data, function() {
+                //
+        });
+    }
 
 
     function createRatingBoxes() {
-    	var commentHeaderCssQuery = '.commentHeader',	// we inject rating bar in comment header
-    		allHeaders = document.querySelectorAll(commentHeaderCssQuery),
-    		ratingBarPrototype = document.createDocumentFragment(),
-    		clone,
-    		header,
-    		commentId;
+        var commentSelector = '.b-leaf',
+            comments = document.querySelectorAll(commentSelector),
+            ratingBarPrototype = document.createElement('div'),
+            clone,
+            hover,
+            comment,
+            commentId
+            rating;
 
-		ratingBarPrototype.innerHTML =  '<div class="rating"></div>';
+		ratingBarPrototype.innerHTML =  '<div class="rating">' +
+											'<a href=# class="plus"></a>' +
+											'<div class="hover"></div>' +
+										'</div>';
 
-		for (var i = 0, l = allHeaders.length; i < l; i++) {
-			clone = ratingBarPrototype.cloneNode(true);
-			clone.childNodes[0].addEventListener('click', doRate);
+        for (var i = 0, l = comments.length; i < l; i++) {
+            clone = ratingBarPrototype.cloneNode(true);
 
-			header = allHeaders[i];
-			commentId = parseInt(header.parentNode.id.substr(1)),
-			header.appendChild(clone);
-		}
+            comment = comments[i];
+            commentId = parseInt(comment.parentNode.id.substr(1)),
+            rating = ratings[id];
+            if (rating !== undefined) {
+				clone.childNodes[0].style.background = 'red';
+            	clone.childNodes[0].childNodes[0].style.left = (rating - 100) / 200 * width + 'px';
+            }
+        	hover = clone.childNodes[0].childNodes[1];
+
+            clone.addEventListener('click', doRate);
+            clone.addEventListener('mouseenter', function() {
+            	hover.style.display = 'block';
+            });
+            clone.addEventListener('mouseleave', function() {
+            	hover.style.display = 'none';
+            });
+            clone.addEventListener('mousemove', function(event) {
+            	eventX = getEventRelativeX(hover, event),
+            	hover.style.left = (eventX - 10) + 'px';
+            });
+
+            comment.appendChild(clone);
+        }
 
     }
 
 
+    createRatingBoxes();
+
     ajax.get(host, {
-	    	author: author,
-	    	postId: postId
-	    }, function() {
-	    	//
+            author: author,
+            postId: postId
+    	}, function() {
+            //
     });
 
 })();
