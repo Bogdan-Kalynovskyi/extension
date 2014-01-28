@@ -2,22 +2,19 @@
 
     'use strict';
 
-<<<<<<< HEAD
-    var popup,
-        css = '_lj_popup' + Date.now();
+	var host = 'http://192.168.1.72:8080/api/rating/',
+		userName = getLoggedUserName(),
+		author = location.host.substr(0, location.host.indexOf('.')),
+		postId = parseInt(location.pathname.substr(1));
 
-<<<<<<< HEAD
-    var serviceHost = 'http://nearbyfuture.com',
-        serviceQuery = ':8080/api/?query=';
-=======
 
-    //todo: we can load jQuery only when it is not on the page
+    var serviceHost = 'http://example.com',
 
 
     function htmlEntities(str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
->>>>>>> everything that is not needed must die
+
 
     console.log(location.href);
 
@@ -44,78 +41,75 @@
     }
 
 
-    function removePopup () {
-        $(popup).fadeOut(400, function() {
-            if (popup === this) {
-                popup = null;
-                document.body.removeChild(this);
-            }
-        });
+    var serviceHost = 'http://example.com',
+        serviceQuery = ':8080/api/?query=';
+        
+
+	function htmlEntities(str) {
+		return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	}
+
+
+    function getLoggedUserName() {
+    	var hiddenInput = document.querySelector('#Greeting input[name=user]');
+
+    	if (hiddenInput) {
+    		return hiddenInput.value;
+    	} else {
+    		return null;
+    	}
     }
 
 
-    addCSS('.' + css + '{\
-        position: absolute;\
-        padding: 5px 10px 3px 10px;\
-        border-radius: 7px;\
-        border: 1px solid #BFBFBF;\
-        color: #444;\
-        font-size: 16px;\
-        text-shadow: 0 1px 0 #FFF; 0 -1px 0 rgba(0,0,0,.2);\
-        box-shadow: 4px 4px 4px 1px rgba(0, 0, 0, .1);\
-        background-color: #EEE;\
-        background-image: linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -moz-linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -webkit-linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -ms-linear-gradient(bottom, #CCC 0%, #EEE 81%);\
-        background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #CCC),color-stop(0.81, #EEE));\
-    }');
+	function doRate(event) {
+		var el = this,
+			url = host + 'set/',
+			commentId = parseInt(el.parentNode.id.substr(1)),
+			elementData = el.getBoundingClientRect(),
+			width = elementData.width,
+			clickX = event.pageX - elementData.left,
+			rating = (clickX - width/2) / width/2 * 100,
+			data = {
+				userName: userName,
+				author: author,
+				postId: postId,
+				commentId: commentId,
+				rating: rating
+			};
+
+		ajax.get(url, data, function() {
+			//
+		});
+	}
 
 
-    document.body.addEventListener('mouseup', function (e) {
+    function createRatingBoxes() {
+    	var commentHeaderCssQuery = '.commentHeader',	// we inject rating bar in comment header
+    		allHeaders = document.querySelectorAll(commentHeaderCssQuery),
+    		ratingBarPrototype = document.createDocumentFragment(),
+    		clone,
+    		header,
+    		commentId;
 
-        if (popup !== e.target) {
+		ratingBarPrototype.innerHTML =  '<div class="rating"></div>';
 
-            var selectionText = window.getSelection().toString().trim();
+		for (var i = 0, l = allHeaders.length; i < l; i++) {
+			clone = ratingBarPrototype.cloneNode(true);
+			clone.childNodes[0].addEventListener('click', doRate);
 
-            if (selectionText) {
-                $.ajax("http://timeapi.org/pdt/" + encodeURIComponent(selectionText), {
-                    dataType: 'text',
-                    complete: function (request) {
-                        drawPopup(request, e);
-                    }
-                });
-            }
-        }
-    });
-=======
-    // lines above are for incapsulation purposes only
+			header = allHeaders[i];
+			commentId = parseInt(header.parentNode.id.substr(1)),
+			header.appendChild(clone);
+		}
 
-<<<<<<< HEAD
-    // this function is to prevent data be executed as HTML (unused now)
-    /*function htmlEntities(str) {
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }*/
+    }
 
-<<<<<<< HEAD
->>>>>>> making small and clear demo
-=======
->>>>>>> important bugfixes, read todos
 
-    var serviceHost = 'http://example.com',
-        serviceQuery = ':8080/api/?query=';
-=======
-    var serviceURL = 'http://nearbyfuture.com:8080/api/?query=';
->>>>>>> some change
-
-    $.ajax(serviceURL + encodeURIComponent(location.href), {
-        dataType: 'json',
-        complete: function (json) {
-            console.log(json);
-        },
-        error: function () {
-
-        }
+    ajax.get(host, {
+	    	author: author,
+	    	postId: postId
+	    }, function() {
+	    	//
     });
 
 })();
