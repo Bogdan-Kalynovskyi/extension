@@ -4,22 +4,17 @@
     "description": "This extension helps us with LJ comments",
     "version": "1.0",
     "permissions": [
-        "http://*/*",
-        "https://*/*"
+        "http://*.livejournal.com/*",
+        "https://*.livejournal.com/*" //todo: not works on https, j think i know why
     ],
     "browser_action": {
-        "default_icon": "icon.png",
-        "default_popup": "popup.html"
-    },
-    "background": {
-        "persistent": true,
-        "scripts": ["background.js"]
+        "default_icon": "icon.png"
     },
     "content_scripts": [
         {
             "matches": [
-              "http://*/*",
-              "https://*/*"
+                "http://*.livejournal.com/*",
+                "https://*.livejournal.com/*"
             ],
             "js": [
                 "jquery-1.9.0.js",
