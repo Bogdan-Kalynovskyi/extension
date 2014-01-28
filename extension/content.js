@@ -3,13 +3,17 @@
     'use strict';
 
 	var host = 'http://192.168.1.72:8080/api/rating/',
-		userName = getLoggedUserId(),
+		userName = getLoggedUserName(),
 		author = location.host.substr(0, location.host.indexOf('.')),
-		postId = parseInt(location.pathname.substr(1), 10);
+		postId = parseInt(location.pathname.substr(1));
 
 
+	function htmlEntities(str) {
+		return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	}
 
-    function getLoggedUserId() {
+
+    function getLoggedUserName() {
     	var hiddenInput = document.querySelector('#Greeting input[name=user]');
 
     	if (hiddenInput) {
