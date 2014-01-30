@@ -7,7 +7,7 @@
         author = location.host.substr(0, location.host.indexOf('.')),
         postId = parseInt(location.pathname.substr(1)),
         ratings = {},
-        width = 200;
+        width = 100;
 
     function htmlEntities(str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -29,7 +29,7 @@
         var el = this,
             url = host + 'set/',
             commentId = parseInt(el.parentNode.id.substr(1)),
-            clickX = getEventRelativeX(event),
+			clickX = event.pageX - el.getBoundingClientRect().left,
             rating = (clickX - width/2) / width/2 * 100,
             data = {
                     userName: userName,
@@ -60,6 +60,7 @@
 		ratingBarPrototype.innerHTML =  '<div class="rating">' +
 											'<a href=# class="plus"></a>' +
 											'<div class="hover"></div>' +
+											'<div class="rate_message">Click to rate</div>' +
 										'</div>';
 
         for (var i = 0, l = comments.length; i < l; i++) {
@@ -76,23 +77,34 @@
 
             (function() {
 	        	var hover = clone.childNodes[0].childNodes[1],
-	        		container = clone;
+	        		container = clone.childNodes[0];
 
-	            clone.addEventListener('mouseenter', function() {
-	            	hover.style.display = 'block';
-	            });
 	            clone.addEventListener('mouseleave', function() {
 	            	hover.style.display = 'none';
+	            	container.childNodes[2].style.color = '';
 	            });
+
 	            clone.addEventListener('mousemove', function(event) {
 	                var elementPos = container.getBoundingClientRect(),
-						eventX = event.clientX - elementPos.left;
-	            	hover.style.left = (eventX - 12) + 'px';
+						eventX = event.pageX - elementPos.left;
+					if (eventX < 1 || eventX > width - 1) {
+		            	hover.style.display = 'none';
+		            	container.childNodes[2].style.color = '';
+					} else {
+		            	hover.style.display = 'block';
+		            	container.childNodes[2].style.color = '#eee';
+	            		hover.style.left = (eventX - 8) + 'px';
+	            	}
 	            });
 
 	            comment.appendChild(clone);
 	        })();
         }
+
+    }
+
+
+    function injectIntoExpand() {
 
     }
 

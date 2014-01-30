@@ -20,9 +20,21 @@
 .hover {
 	display: none;
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 16px;
+	height: 16px;
+	top: 2px;
 	border-radius: 49%;
 	background: #999;
-	box-shadow: 0 0 5px #999;
+	box-shadow: 1px 1px 3px #555;
+}
+
+.rate_message {
+	position: absolute;
+	padding-left: 9px;
+	top: -1px;
+	width: 100%;
+	color: rgba(255, 255, 255, .02);
+	transition: color .2s;
+	user-select: none;
+	cursor: pointer;
 }
