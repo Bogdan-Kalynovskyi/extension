@@ -48,7 +48,7 @@
 
 
     function createRatingBoxes() {
-        var commentSelector = '.b-leaf',
+        var commentSelector = '.b-leaf:not(.b-leaf-collapsed)',
             comments = document.querySelectorAll(commentSelector),
             ratingBarPrototype = document.createElement('div'),
             clone,
@@ -105,11 +105,21 @@
 
 
     function injectIntoExpand() {
+    	var expandLinkSelector = '.b-leaf-actions-expand > a, .b-leaf-actions-expandchilds > a',
+    		expandLinks = document.querySelectorAll(expandLinkSelector);
 
+        for (var i = 0, l = expandLinks.length; i < l; i++) {
+    		expandLinks[i].addEventListener('click', function() {
+    			alert();
+    		});
+		}
     }
 
 
-    setTimeout(createRatingBoxes, 2000);
+    setTimeout(function() {
+    	createRatingBoxes();
+    	injectIntoExpand();
+    }, 1000);
 
     ajax.get(host, {
             author: author,
