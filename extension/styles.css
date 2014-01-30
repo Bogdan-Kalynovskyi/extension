@@ -4,8 +4,9 @@
 	top: 20px;
 	width: 100px;
 	height: 20px;
-	background: #999;
-	border: 1px solid #555;
+	background: #bbb;
+	border: 1px solid #999;
+	border-radius: 2px;
 }
 
 .plus {
@@ -22,6 +23,6 @@
 	width: 20px;
 	height: 20px;
 	border-radius: 49%;
-	background: #aaa;
-	box-shadow: 0 0 5px #aaa;
+	background: #999;
+	box-shadow: 0 0 5px #999;
 }
