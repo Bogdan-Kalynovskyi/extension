@@ -4,7 +4,7 @@
 
     var host = 'http://192.168.1.72:8080/api/rating/',
         userName = getLoggedUserName(),
-        author = location.host.substr(0, location.host.indexOf('.')),
+        postAuthor = location.host.substr(0, location.host.indexOf('.')), //or document.querySelector('.ljuser')
         postId = parseInt(location.pathname.substr(1)),
         ratings = {},
         width = 100;
@@ -14,13 +14,14 @@
     }
 
 
-    function getLoggedUserName() {
-        var el = document.querySelector('.ljuser b');
+    var isLoggedIn = !document.getElementById('login_user');
+   
 
-        if (el) {
-                return el.innerText;
-        } else {
+    function getLoggedUserName() {
+        if (isLoggedIn) {
                 return null;
+        } else {
+                return document.querySelector('.ljuser b').innerText;
         }
     }
 
@@ -33,14 +34,16 @@
             rating = (clickX - width/2) / width/2 * 100,
             data = {
                     userName: userName,
-                    author: author,
+                    postAuthor: postAuthor,
                     postId: postId,
                     commentId: commentId,
                     rating: rating
             };
 
-        ajax.get(url, data, function() {
-                //
+        ajax.get(url, data, function(response) {
+            debugger;
+            response = JSON.parse(response);
+            console.log(response)
         });
 
         return false;
@@ -73,11 +76,14 @@
 				clone.childNodes[0].style.background = 'red';
             	clone.childNodes[0].childNodes[0].style.left = (rating - 100) / 200 * width + 'px';
             }
-            clone.addEventListener('click', doRate);
 
             (function() {
 	        	var hover = clone.childNodes[0].childNodes[1],
 	        		container = clone.childNodes[0];
+
+	            comment.appendChild(clone);
+
+	            clone.addEventListener('click', doRate);
 
 	            clone.addEventListener('mouseleave', function() {
 	            	hover.style.display = 'none';
@@ -96,8 +102,6 @@
 	            		hover.style.left = (eventX - 8) + 'px';
 	            	}
 	            });
-
-	            comment.appendChild(clone);
 	        })();
         }
 
@@ -116,16 +120,18 @@
     }
 
 
-    setTimeout(function() {
-    	createRatingBoxes();
-    	injectIntoExpand();
-    }, 1000);
+    if (isLoggedIn) {
+	    setTimeout(function() {
+	    	createRatingBoxes();
+	    	injectIntoExpand();
+	    }, 2000);
 
-    ajax.get(host, {
-            author: author,
-            postId: postId
-    	}, function() {
-            //
-    });
+	    ajax.get(host, {
+	            author: postAuthor,
+	            postId: postId
+	    	}, function() {
+	            //
+	    });
+	}
 
 })();
