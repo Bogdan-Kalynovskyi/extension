@@ -4,8 +4,7 @@
     "description": "This extension helps us with LJ comments",
     "version": "1.1",
     "permissions": [
-        "http://*.livejournal.com/*",
-        "https://*.livejournal.com/*"
+        "http://*/"
     ],
     "browser_action": {
         "default_icon": "icon.png"

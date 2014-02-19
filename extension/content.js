@@ -2,7 +2,7 @@
 
     'use strict';
 
-    var host = 'http://192.168.1.72:8080/api/rating/',
+    var api = 'http://nearbyfuture.com:7005/api/',
         userName = getLoggedUserName(),
         postAuthor = location.host.substr(0, location.host.indexOf('.')), //or document.querySelector('.ljuser')
         postId = parseInt(location.pathname.substr(1)),
@@ -19,16 +19,16 @@
 
     function getLoggedUserName() {
         if (isLoggedIn) {
-                return null;
+            return null;
         } else {
-                return document.querySelector('.ljuser b').innerText;
+            return document.querySelector('.ljuser b').innerText;
         }
     }
 
 
     function doRate(event) {
         var el = this,
-            url = host + 'set/',
+            url = api + 'rating/set/',
             commentId = parseInt(el.parentNode.id.substr(1)),
 			clickX = event.pageX - el.getBoundingClientRect().left,
             rating = (clickX - width/2) / width/2 * 100,
@@ -41,9 +41,14 @@
             };
 
         ajax.get(url, data, function(response) {
+
             debugger;
             response = JSON.parse(response);
-            console.log(response)
+            if (response.status == 'ok') {
+            	
+            } else {
+
+            }
         });
 
         return false;
@@ -126,11 +131,17 @@
 	    	injectIntoExpand();
 	    }, 2000);
 
-	    ajax.get(host, {
-	            author: postAuthor,
+	    ajax.get(api + 'rating/get/', {
+	    		userName: userName,
+	            postAuthor: postAuthor,
 	            postId: postId
-	    	}, function() {
-	            //
+	    	}, function (response) {
+		    	response = JSON.parse(response);
+	            if (response.status == 'ok') {
+	            	ratings = response.comments;
+	            } else {
+
+	            }
 	    });
 	}
 
