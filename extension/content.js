@@ -2,45 +2,71 @@
 
     'use strict';
 
-    var host = 'http://192.168.1.72:8080/api/rating/',
-        userName = getLoggedUserName(),
-        author = location.host.substr(0, location.host.indexOf('.')),
-        postId = parseInt(location.pathname.substr(1)),
-        ratings = {},
+    function getData() {
+	    var href = location.href.substr(7);
+
+    	if (href.substr(-1) === '/') {
+    		href = href.substr(0, href.length - 1);
+    	}
+
+    	href = href.replace('/', '.').split('.');
+
+    	return {
+    		userName: getLoggedUserName(),
+	        postAuthor: href[0],
+	        postId: parseInt(href[3])
+	    }
+    }
+
+
+    function expand(o1, o2) {
+    	for (var p2 in o2) {
+    		o1[p2] = o2[p2];
+    	}
+    	return o1;
+    }
+
+
+    var api = 'http://nearbyfuture.com:7005/api/',
+        ratings,
         width = 100;
+
 
     function htmlEntities(str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
 
-    function getLoggedUserName() {
-        var el = document.querySelector('.ljuser b');
 
-        if (el) {
-                return el.innerText;
+    function getLoggedUserName() {
+        if (isLoggedIn) {
+            return document.querySelector('.ljuser b').innerText;
         } else {
-                return null;
+            return null;
         }
     }
 
 
     function doRate(event) {
         var el = this,
-            url = host + 'set/',
-            commentId = parseInt(el.parentNode.id.substr(1)),
+            url = api + 'rating/set/',
+            commentId = parseInt(el.parentNode.parentNode.id.substr(5)),
 			clickX = event.pageX - el.getBoundingClientRect().left,
-            rating = (clickX - width/2) / width/2 * 100,
-            data = {
-                    userName: userName,
-                    author: author,
-                    postId: postId,
+            rating = Math.round((clickX - width/2) / width/2 * 100),
+            data = expand(pageData, {
                     commentId: commentId,
                     rating: rating
-            };
+            });
 
-        ajax.get(url, data, function() {
-                //
+        ajax.get(url, data, function(response) {
+
+            debugger;
+            response = JSON.parse(response);
+            if (response.status == 'ok') {
+            	
+            } else {
+
+            }
         });
 
         return false;
@@ -48,7 +74,7 @@
 
 
     function createRatingBoxes() {
-        var commentSelector = '.b-leaf',
+        var commentSelector = '.comment-head',
             comments = document.querySelectorAll(commentSelector),
             ratingBarPrototype = document.createElement('div'),
             clone,
@@ -58,7 +84,7 @@
             rating;
 
 		ratingBarPrototype.innerHTML =  '<div class="rating">' +
-											'<a href=# class="plus"></a>' +
+											'<div class="plus"></div>' +
 											'<div class="hover"></div>' +
 											'<div class="rate_message">Click to rate</div>' +
 										'</div>';
@@ -67,17 +93,21 @@
             clone = ratingBarPrototype.cloneNode(true);
 
             comment = comments[i];
-            commentId = parseInt(comment.parentNode.id.substr(1)),
+            comment.style.position = 'relative';
+            commentId = parseInt(comment.parentNode.parentNode.id.substr(5)),
             rating = ratings[commentId];
             if (rating !== undefined) {
 				clone.childNodes[0].style.background = 'red';
             	clone.childNodes[0].childNodes[0].style.left = (rating - 100) / 200 * width + 'px';
             }
-            clone.addEventListener('click', doRate);
 
             (function() {
 	        	var hover = clone.childNodes[0].childNodes[1],
 	        		container = clone.childNodes[0];
+
+	            comment.appendChild(clone);
+
+	            clone.addEventListener('click', doRate);
 
 	            clone.addEventListener('mouseleave', function() {
 	            	hover.style.display = 'none';
@@ -96,8 +126,6 @@
 	            		hover.style.left = (eventX - 8) + 'px';
 	            	}
 	            });
-
-	            comment.appendChild(clone);
 	        })();
         }
 
@@ -105,17 +133,56 @@
 
 
     function injectIntoExpand() {
+    	var expandLinkSelector = '.b-leaf-actions-expand > a, .b-leaf-actions-expandchilds > a',
+    		expandLinks = document.querySelectorAll(expandLinkSelector);
+
+        for (var i = 0, l = expandLinks.length; i < l; i++) {
+    		expandLinks[i].addEventListener('click', function() {
+    			alert();
+    		});
+		}
+    }
+
+
+    function main() {
+	    	createRatingBoxes();
+	    	injectIntoExpand();
+    }
+
+
+    function doTimeout() {
+		setTimeout(function() {
+			var commentsLoaded = document.querySelector('.entry-comments-text').childNodes.length;
+
+			console.log(commentsLoaded);
+
+	    	if (ratings && commentsLoaded > 20) {
+	    		main();
+	    	} else {
+	    		doTimeout();
+	    	}
+	    }, 200);
 
     }
 
 
-    setTimeout(createRatingBoxes, 2000);
+    var isLoggedIn = !document.getElementById('login_user');
+   
+    var pageData = getData();
 
-    ajax.get(host, {
-            author: author,
-            postId: postId
-    	}, function() {
-            //
-    });
+
+    if (isLoggedIn && pageData.postId) {
+	 
+	    doTimeout();
+
+	    ajax.get(api + 'rating/get/', pageData, function (response) {
+		    	response = JSON.parse(response);
+	            if (response.status == 'ok') {
+	            	ratings = response.comments;
+	            } else {
+
+	            }
+	    });
+	}
 
 })();

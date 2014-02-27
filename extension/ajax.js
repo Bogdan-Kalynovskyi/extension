@@ -17,6 +17,8 @@ ajax.send = function(url, method, data, callback, error) {
     }
     if (data !== undefined) {
     	x.send(data);
+    } else {
+    	x.send();
     }
 };
 
@@ -31,6 +33,8 @@ ajax.get = function(url, data, callback, error) {
 ajax.post = function(url, data, callback, error) {
 	if (typeof data === 'object' && data !== null) {
 		data = JSON.stringify(data);
+	} else {
+		data = undefined;
 	}
     ajax.send(url, 'POST', data, callback, error);
 };
