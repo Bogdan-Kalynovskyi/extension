@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "LJ",
     "description": "This extension helps us with LJ comments",
-    "version": "1.1",
+    "version": "0.1",
     "permissions": [
         "http://*/"
     ],
@@ -19,7 +19,9 @@
                 "ajax.js",
                 "content.js"
             ],
-            "css": ["styles.css"]
+            "css": [
+            	"styles.css"
+        	]
         }
     ]
 }

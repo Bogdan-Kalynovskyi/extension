@@ -2,26 +2,47 @@
 
     'use strict';
 
+    function getData() {
+	    var href = location.href.substr(7);
+
+    	if (href.substr(-1) === '/') {
+    		href = href.substr(0, href.length - 1);
+    	}
+
+    	href = href.replace('/', '.').split('.');
+
+    	return {
+    		userName: getLoggedUserName(),
+	        postAuthor: href[0],
+	        postId: parseInt(href[3])
+	    }
+    }
+
+
+    function expand(o1, o2) {
+    	for (var p2 in o2) {
+    		o1[p2] = o2[p2];
+    	}
+    	return o1;
+    }
+
+
     var api = 'http://nearbyfuture.com:7005/api/',
-        userName = getLoggedUserName(),
-        postAuthor = location.host.substr(0, location.host.indexOf('.')), //or document.querySelector('.ljuser')
-        postId = parseInt(location.pathname.substr(1)),
-        ratings = {},
+        ratings,
         width = 100;
+
 
     function htmlEntities(str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
 
-    var isLoggedIn = !document.getElementById('login_user');
-   
 
     function getLoggedUserName() {
         if (isLoggedIn) {
-            return null;
-        } else {
             return document.querySelector('.ljuser b').innerText;
+        } else {
+            return null;
         }
     }
 
@@ -29,16 +50,13 @@
     function doRate(event) {
         var el = this,
             url = api + 'rating/set/',
-            commentId = parseInt(el.parentNode.id.substr(1)),
+            commentId = parseInt(el.parentNode.parentNode.id.substr(5)),
 			clickX = event.pageX - el.getBoundingClientRect().left,
-            rating = (clickX - width/2) / width/2 * 100,
-            data = {
-                    userName: userName,
-                    postAuthor: postAuthor,
-                    postId: postId,
+            rating = Math.round((clickX - width/2) / width/2 * 100),
+            data = expand(pageData, {
                     commentId: commentId,
                     rating: rating
-            };
+            });
 
         ajax.get(url, data, function(response) {
 
@@ -56,7 +74,7 @@
 
 
     function createRatingBoxes() {
-        var commentSelector = '.b-leaf:not(.b-leaf-collapsed)',
+        var commentSelector = '.comment-head',
             comments = document.querySelectorAll(commentSelector),
             ratingBarPrototype = document.createElement('div'),
             clone,
@@ -66,7 +84,7 @@
             rating;
 
 		ratingBarPrototype.innerHTML =  '<div class="rating">' +
-											'<a href=# class="plus"></a>' +
+											'<div class="plus"></div>' +
 											'<div class="hover"></div>' +
 											'<div class="rate_message">Click to rate</div>' +
 										'</div>';
@@ -75,7 +93,8 @@
             clone = ratingBarPrototype.cloneNode(true);
 
             comment = comments[i];
-            commentId = parseInt(comment.parentNode.id.substr(1)),
+            comment.style.position = 'relative';
+            commentId = parseInt(comment.parentNode.parentNode.id.substr(5)),
             rating = ratings[commentId];
             if (rating !== undefined) {
 				clone.childNodes[0].style.background = 'red';
@@ -125,17 +144,38 @@
     }
 
 
-    if (isLoggedIn) {
-	    setTimeout(function() {
+    function main() {
 	    	createRatingBoxes();
 	    	injectIntoExpand();
-	    }, 2000);
+    }
 
-	    ajax.get(api + 'rating/get/', {
-	    		userName: userName,
-	            postAuthor: postAuthor,
-	            postId: postId
-	    	}, function (response) {
+
+    function doTimeout() {
+		setTimeout(function() {
+			var commentsLoaded = document.querySelector('.entry-comments-text').childNodes.length;
+
+			console.log(commentsLoaded);
+
+	    	if (ratings && commentsLoaded > 20) {
+	    		main();
+	    	} else {
+	    		doTimeout();
+	    	}
+	    }, 200);
+
+    }
+
+
+    var isLoggedIn = !document.getElementById('login_user');
+   
+    var pageData = getData();
+
+
+    if (isLoggedIn && pageData.postId) {
+	 
+	    doTimeout();
+
+	    ajax.get(api + 'rating/get/', pageData, function (response) {
 		    	response = JSON.parse(response);
 	            if (response.status == 'ok') {
 	            	ratings = response.comments;
