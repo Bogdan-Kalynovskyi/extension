@@ -51,7 +51,7 @@
         var el = this,
             url = api + 'rating/set/',
             commentId = parseInt(el.parentNode.parentNode.id.substr(5)),
-			clickX = event.pageX - el.getBoundingClientRect().left,
+			clickX = event.pageX - el.childNodes[0].getBoundingClientRect().left,
             rating = Math.round((clickX - width/2) / width/2 * 100),
             data = expand(pageData, {
                     commentId: commentId,
@@ -60,10 +60,10 @@
 
         ajax.get(url, data, function(response) {
 
-            debugger;
             response = JSON.parse(response);
             if (response.status == 'ok') {
-            	
+				el.childNodes[0].style.background = 'red';
+            	el.childNodes[0].childNodes[0].style.left = (100 - rating) / 200 * width + 'px';
             } else {
 
             }
@@ -94,11 +94,11 @@
 
             comment = comments[i];
             comment.style.position = 'relative';
-            commentId = parseInt(comment.parentNode.parentNode.id.substr(5)),
+            commentId = parseInt(comment.parentNode.id.substr(5)),
             rating = ratings[commentId];
             if (rating !== undefined) {
 				clone.childNodes[0].style.background = 'red';
-            	clone.childNodes[0].childNodes[0].style.left = (rating - 100) / 200 * width + 'px';
+            	clone.childNodes[0].childNodes[0].style.left = (100 - rating.rating) / 200 * width + 'px';
             }
 
             (function() {
