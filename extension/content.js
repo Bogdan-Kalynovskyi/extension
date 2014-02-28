@@ -52,7 +52,7 @@
             url = api + 'rating/set/',
             commentId = parseInt(el.parentNode.parentNode.id.substr(5)),
 			clickX = event.pageX - el.childNodes[0].getBoundingClientRect().left,
-            rating = Math.round((clickX - width/2) / width/2 * 100),
+            rating = Math.round((clickX - width/2) / width * 200),
             data = expand(pageData, {
                     commentId: commentId,
                     rating: rating
