@@ -74,7 +74,7 @@
 
 
     function createRatingBoxes() {
-        var commentSelector = '.comment-head',
+        var commentSelector = '.b-leaf-header',
             comments = document.querySelectorAll(commentSelector),
             ratingBarPrototype = document.createElement('div'),
             clone,
@@ -152,11 +152,9 @@
 
     function doTimeout() {
 		setTimeout(function() {
-			var commentsLoaded = document.querySelector('.entry-comments-text').childNodes.length;
+			var isAnyComment = document.querySelector('.b-leaf');
 
-			console.log(commentsLoaded);
-
-	    	if (ratings && commentsLoaded > 20) {
+	    	if (ratings && isAnyComment) {
 	    		main();
 	    	} else {
 	    		doTimeout();
