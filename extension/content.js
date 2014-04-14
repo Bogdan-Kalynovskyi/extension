@@ -2,7 +2,7 @@
 
     'use strict';
 
-    function getData() {
+    function getData () {
 	    var href = location.href.substr(7);
 
     	if (href.substr(-1) === '/') {
@@ -19,7 +19,7 @@
     }
 
 
-    function expand(o1, o2) {
+    function expand (o1, o2) {
     	for (var p2 in o2) {
     		o1[p2] = o2[p2];
     	}
@@ -32,13 +32,13 @@
         width = 100;
 
 
-    function htmlEntities(str) {
+    function htmlEntities (str) {
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
 
 
-    function getLoggedUserName() {
+    function getLoggedUserName () {
         if (isLoggedIn) {
             return document.querySelector('.ljuser b').innerText;
         } else {
@@ -47,7 +47,7 @@
     }
 
 
-    function doRate(event) {
+    function doRate (event) {
         var el = this,
             url = api + 'rating/set/',
             commentId = parseInt(el.parentNode.parentNode.id.substr(5)),
@@ -74,7 +74,7 @@
 
 
     function createRatingBoxes() {
-        var commentSelector = '.b-leaf-header',
+        var commentSelector = ':not(.b-leaf-collapsed) > .b-leaf-inner > .b-leaf-header',
             comments = document.querySelectorAll(commentSelector),
             ratingBarPrototype = document.createElement('div'),
             clone,
@@ -83,11 +83,10 @@
             commentId,
             rating;
 
-		ratingBarPrototype.innerHTML =  '<div class="rating">' +
-											'<div class="plus"></div>' +
-											'<div class="hover"></div>' +
-											'<div class="rate_message">Click to rate</div>' +
-										'</div>';
+        ratingBarPrototype.className = 'r-rating';
+		ratingBarPrototype.innerHTML =  '<div class="r-plus"></div>' +
+										'<div class="r-hover"></div>' +
+										'<div class="r-message">Click to rate</div>';
 
         for (var i = 0, l = comments.length; i < l; i++) {
             clone = ratingBarPrototype.cloneNode(true);
@@ -97,13 +96,13 @@
             commentId = parseInt(comment.parentNode.id.substr(5)),
             rating = ratings[commentId];
             if (rating !== undefined) {
-				clone.childNodes[0].style.background = 'red';
-            	clone.childNodes[0].childNodes[0].style.left = (100 - rating.rating) / 200 * width + 'px';
+				clone.style.background = 'red';
+            	clone.childNodes[0].style.left = (100 - rating.rating) / 200 * width + 'px';
             }
 
             (function() {
-	        	var hover = clone.childNodes[0].childNodes[1],
-	        		container = clone.childNodes[0];
+	        	var hover = clone.childNodes[1],
+	        		message = clone.childNodes[2];
 
 	            comment.appendChild(clone);
 
@@ -111,18 +110,18 @@
 
 	            clone.addEventListener('mouseleave', function() {
 	            	hover.style.display = 'none';
-	            	container.childNodes[2].style.color = '';
+	            	message.style.color = '';
 	            });
 
 	            clone.addEventListener('mousemove', function(event) {
-	                var elementPos = container.getBoundingClientRect(),
+	                var elementPos = clone.getBoundingClientRect(),
 						eventX = event.pageX - elementPos.left;
 					if (eventX < 1 || eventX > width - 1) {
 		            	hover.style.display = 'none';
-		            	container.childNodes[2].style.color = '';
+		            	message.style.color = '';
 					} else {
 		            	hover.style.display = 'block';
-		            	container.childNodes[2].style.color = '#eee';
+		            	message.style.color = '#eee';
 	            		hover.style.left = (eventX - 8) + 'px';
 	            	}
 	            });
@@ -144,20 +143,20 @@
     }
 
 
-    function main() {
+    function runExtension() {
 	    	createRatingBoxes();
 	    	injectIntoExpand();
     }
 
 
-    function doTimeout() {
+    function waitForComments() {
 		setTimeout(function() {
 			var isAnyComment = document.querySelector('.b-leaf');
 
 	    	if (ratings && isAnyComment) {
-	    		main();
+	    		runExtension();
 	    	} else {
-	    		doTimeout();
+	    		waitForComments();
 	    	}
 	    }, 200);
 
@@ -171,7 +170,7 @@
 
     if (isLoggedIn && pageData.postId) {
 	 
-	    doTimeout();
+	    waitForComments();
 
 	    ajax.get(api + 'rating/get/', pageData, function (response) {
 		    	response = JSON.parse(response);
